@@ -25,6 +25,8 @@ public class RobotContainer {
   //Constructor for initialization
   public RobotContainer() {
     configureBindings();
+    //debug only, remove later
+    m_armSubsystem.setDefaultCommand(m_armSubsystem.controllerMoveArmCommand(() -> m_driverController.getLeftY()));
   }
 
   /**
