@@ -12,6 +12,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj.GenericHID;
 
 //Class used to "describe" the robot -- subsystems, controllers, etc.
 public class RobotContainer {
@@ -25,8 +26,9 @@ public class RobotContainer {
   //Constructor for initialization
   public RobotContainer() {
     configureBindings();
-    //debug only, remove later
-    m_armSubsystem.setDefaultCommand(m_armSubsystem.controllerMoveArmCommand(() -> m_driverController.getLeftY()));
+    //debug only, remove these later
+    //m_armSubsystem.setDefaultCommand(m_armSubsystem.controllerMoveArmCommand(() -> m_driverController.getLeftY())); //axis 1
+    m_armSubsystem.setDefaultCommand(m_armSubsystem.controllerAutoMoveArmCommand());
   }
 
   /**

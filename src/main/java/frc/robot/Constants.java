@@ -30,10 +30,15 @@ public final class Constants {
     public static final int kArmMotorControllerID = 5;
 
     public static final class Feedforward { //Data from ReCalc; SysID the real consts as soon as the robot is accessible
-      public static final double kG = 0.38;
+      public static final double kG = 0.034;
       public static final double kV = 1.91;
       public static final double kA = 0.01;
       public static final double kS = 0.01;
+    }
+
+    public static final class Feedback {
+      public static final double kP = 1.8; //0.03 for deg instead of rad
+      public static final double kD = 0;
     }
 
     //these are to be used for simulation
