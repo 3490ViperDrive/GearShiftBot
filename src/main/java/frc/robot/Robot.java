@@ -33,7 +33,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_leftStick = new Joystick(0);
     m_rightStick = new Joystick(1);
-
+                                                    // most of that needs to be deleted or changed for DriveSubsystem.java [at least I think so idk :shrug:]
     // Invert the left and right sides
     m_leftMaster.setInverted(false);
     m_rightMaster.setInverted(true);
@@ -82,14 +82,19 @@ public class Robot extends TimedRobot {
     m_time = Timer.getFPGATimestamp() - m_startTime;
     //if time is less than how long you want to drive in auto, set voltage at 50%
     //if time is greater than how long you want to drive, set voltage to 0%
-    if (m_time < m_autoTime) {
-      m_rightMaster.set(ControlMode.PercentOutput, 0.5);
-      m_leftMaster.set(ControlMode.PercentOutput, 0.5);
-    } else {
-      // Stops robot
-      m_leftMaster.set(ControlMode.PercentOutput, 0);
-      m_rightMaster.set(ControlMode.PercentOutput, 0);
-    }
+
+    // The code below needs fixing with what I have coded in DriveSubsystem.java
+
+
+    
+    // if (m_time < m_autoTime) {
+    //   m_rightMaster.set(ControlMode.PercentOutput, 0.5);
+    //   m_leftMaster.set(ControlMode.PercentOutput, 0.5);
+    // } else {
+    //   // Stops robot
+    //   m_leftMaster.set(ControlMode.PercentOutput, 0);
+    //   m_rightMaster.set(ControlMode.PercentOutput, 0);
+    // }
   }
 
   @Override
