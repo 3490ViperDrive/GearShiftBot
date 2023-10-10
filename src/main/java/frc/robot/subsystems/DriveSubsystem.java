@@ -26,13 +26,11 @@ public class DriveSubsystem extends SubsystemBase{
 
 
 
-    @Override
     public void robotInit(){
         rightGroup.setInverted(true);
     }
      
     
-    @Override
     public void teleopPeriodic(){
         Drive.arcadeDrive(-DrivingController.getLeftY(), -DrivingController.getRightX());
     }
