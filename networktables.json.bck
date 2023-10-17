@@ -11,7 +11,7 @@
   {
     "name": "/Preferences/Arm kP",
     "type": "double",
-    "value": 1.8,
+    "value": 42.0,
     "properties": {
       "persistent": true,
       "retained": true
@@ -30,6 +30,24 @@
     "name": "/Preferences/Arm setpoint",
     "type": "double",
     "value": 12.0,
+    "properties": {
+      "persistent": true,
+      "retained": true
+    }
+  },
+  {
+    "name": "/Preferences/Debug Mode enabled?",
+    "type": "boolean",
+    "value": true,
+    "properties": {
+      "persistent": true,
+      "retained": true
+    }
+  },
+  {
+    "name": "/Preferences/Arm setpoint (Debug Mode only)",
+    "type": "double",
+    "value": 70.0,
     "properties": {
       "persistent": true,
       "retained": true

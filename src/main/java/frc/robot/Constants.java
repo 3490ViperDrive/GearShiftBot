@@ -28,6 +28,8 @@ public final class Constants {
 
   public static final class ArmConstants {
     public static final int kArmMotorControllerID = 5;
+    public static final int kArmEncoderChannel = 0; //DIO port
+    public static final double kArmEncoderOffset = 0; //TODO find this when encoder is mounted
 
     public static final class Feedforward { //Data from ReCalc; SysID the real consts as soon as the robot is accessible
       public static final double kG = 0.034;
@@ -37,7 +39,7 @@ public final class Constants {
     }
 
     public static final class Feedback {
-      public static final double kP = 1.8; //0.03 for deg instead of rad
+      public static final double kP = 41;
       public static final double kD = 0;
     }
 
@@ -48,4 +50,32 @@ public final class Constants {
     public static final double kRotationalInertia = 0; //aka Moment of Inertia; this will have to be checked in CAD later
 
   }
+
+  public static final class ClawConstants {
+    public static final int kClawMotorCurrentLimit = 20;
+    public static final int kClawSolenoidForwardChannelID = 0;
+    public static final int kClawSolenoidReverseChannelID = 1;
+    public static final int kClawLeftMotorControllerID = 6;
+    public static final int kClawRightMotorControllerID = 7;
+
+    public static final double kClawStallCurrentThreshold = 10; //TODO find on robot
+  }
+
+  public enum ManipulatorSetpoint {
+    kIntake(-5, -0.7),    //these are all guesses, update to true values later
+    kHybridForward(0, 0.5), //also the stow position
+    kL2Forward(40, 0.7),
+    kL3Forward(50, 1),
+    kHybridReverse(135, 0.2),
+    kL2Reverse(125, 0.7),
+    kL3Reverse(120, 1);
+
+    public final double angle;
+    public final double intakeSpeed; //[-1, 1]
+
+    ManipulatorSetpoint(double angle, double intakeSpeed) {
+        this.angle = angle;
+        this.intakeSpeed = intakeSpeed;
+    }
+}
 }
