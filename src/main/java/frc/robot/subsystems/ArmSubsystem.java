@@ -60,6 +60,7 @@ public class ArmSubsystem extends SubsystemBase{
                                                 kLength, 
                                                 Units.degreesToRadians(0), 
                                                 Units.degreesToRadians(140), 
+                                                kMass,
                                                 true);
         armSimulator.setInput(0);
         armGUI = new Mechanism2d(50, 50);

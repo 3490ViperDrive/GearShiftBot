@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 
-
+import static frc.robot.Constants.DrivetrainConstants.*;
 
 public class DriveSubsystem extends SubsystemBase{
 
