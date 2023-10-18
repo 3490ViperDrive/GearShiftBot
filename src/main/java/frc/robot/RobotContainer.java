@@ -4,18 +4,25 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.MoveAndShoot;
-import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.Autos;
+import frc.robot.commands.Cruisin;
+import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.MoveAndShoot;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ExampleSubsystem;
+
+
 
 //Class used to "describe" the robot -- subsystems, controllers, etc.
 public class RobotContainer {
+
+  private DriveSubsystem mDrive = new DriveSubsystem();
+ 
 
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
@@ -28,7 +35,8 @@ public class RobotContainer {
   //Constructor for initialization
   public RobotContainer() {
 
-    
+    mDrive.setDefaultCommand(new Cruisin(m_driverController.getRawAxis(0), m_driverController.getRawAxis(1)));
+
 
     configureBindings();
   } 
@@ -56,5 +64,29 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return Autos.exampleAuto(m_exampleSubsystem);
+  }
+
+  public ExampleSubsystem getM_exampleSubsystem() {
+    return m_exampleSubsystem;
+  }
+
+  public CommandXboxController getM_driverController() {
+    return m_driverController;
+  }
+
+  public CommandXboxController getmController() {
+    return mController;
+  }
+
+  public void setmController(CommandXboxController mController) {
+    this.mController = mController;
+  }
+
+  public CommandJoystick getmJouJoystick() {
+    return mJouJoystick;
+  }
+
+  public void setmJouJoystick(CommandJoystick mJouJoystick) {
+    this.mJouJoystick = mJouJoystick;
   }
 }
