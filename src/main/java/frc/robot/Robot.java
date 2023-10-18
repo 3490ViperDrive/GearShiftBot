@@ -42,8 +42,8 @@ public class Robot extends TimedRobot {
     m_rightSlave.setInverted(true);
 
     // Make the slave motors follow the master
-    m_leftSlave.follow(m_leftMaster);
-    m_rightSlave.follow(m_rightMaster);
+    //m_leftSlave.follow(m_leftMaster);
+    //m_rightSlave.follow(m_rightMaster);
     
   }
 
@@ -82,12 +82,9 @@ public class Robot extends TimedRobot {
     // if time is less than how long you want to drive in auto, set voltage at 50%
     // if time is greater than how long you want to drive, set voltage to 0%
     if (m_time < m_autoTime) {
-      m_rightMaster.set(ControlMode.PercentOutput, 0.5);
-      m_leftMaster.set(ControlMode.PercentOutput, 0.5);
+      //robot drives forward at 50 percengt
     } else {
-      // Stops robot
-      m_leftMaster.set(ControlMode.PercentOutput, 0);
-      m_rightMaster.set(ControlMode.PercentOutput, 0);
+      //stop the robot
     }
   }
 
@@ -103,7 +100,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    tankDrive();
+    //tankDrive();
   }
 
   @Override
@@ -115,11 +112,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    public void tankDrive() {
-      // directly set the joystick y axes to the motors
-      m_leftMaster.set(ControlMode.PercentOutput, -m_leftStick.getY());
-      m_rightMaster.set(ControlMode.PercentOutput, -m_rightStick.getY());
-    }
   }
 
   /** This function is called once when the robot is first started up. */
@@ -129,4 +121,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {}
+
+    /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
 }

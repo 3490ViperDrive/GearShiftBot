@@ -18,6 +18,9 @@ public final class Constants {
   }
 
   public static final class DrivetrainConstants{
-    public static final int kLeftMotorController = 1;
+    public static final int kFrontLeftMotorController = 1;
+    public static final int kFrontRightMotorController = 0;
+    public static final int kBackLeftMotorController = 2;
+    public static final int kBackRightMotorController = 3;
   }
 }
