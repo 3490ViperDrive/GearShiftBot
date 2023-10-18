@@ -19,10 +19,11 @@ public class DriveSubsystem extends SubsystemBase{
     private PWMSparkMax rightMotor1 = new PWMSparkMax(2);
     private PWMSparkMax rightMotor2 = new PWMSparkMax(3);
 
-    private MotorControllerGroup leftMotors;
+    private  MotorControllerGroup leftMotors;
     private MotorControllerGroup rightMotors;
 
-    public static void tankDrive(double leftSpeed, double rightSpeed){
+
+    public void tankDrive(double leftSpeed, double rightSpeed){
 
 
         leftMotors = new MotorControllerGroup(leftMotor1, leftMotor2, null);
