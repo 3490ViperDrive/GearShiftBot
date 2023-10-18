@@ -20,10 +20,10 @@ public final class Constants {
   }
 
   public static final class DrivetrainConstants{
-    public static final int kMasterLeftMotorControllerID = 1;
-    public static final int kMasterRightMotorControllerID = 3;
-    public static final int kFollowerLeftMotorControllerID = 2;
-    public static final int kFollowerRightMotorControllerID = 4;
+    public static final int kFrontLeftMotorController = 1; //this should be accurate to the robot
+    public static final int kFrontRightMotorController = 3;
+    public static final int kBackLeftMotorController = 2;
+    public static final int kBackRightMotorController = 4;
   }
 
   public static final class ArmConstants {
@@ -77,5 +77,6 @@ public final class Constants {
         this.angle = angle;
         this.intakeSpeed = intakeSpeed;
     }
+  }
 }
-}
+
