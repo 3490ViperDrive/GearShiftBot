@@ -10,36 +10,41 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
+
 public class Robot extends TimedRobot {
-   private PWMSparkMax m_rightMaster, m_leftMaster, m_leftSlave, m_rightSlave;
+  private PWMSparkMax m_rightMaster, m_leftMaster;
   private Joystick m_leftStick, m_rightStick;
-  private double m_startTime, m_time;
-  private double m_autoTime = 5;
+  public  double m_startTime, m_time;
+  private double m_autoTime = 15;
 
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
+
   @Override
   public void robotInit() {
+
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    m_leftStick = new Joystick(0);
+
+    //m_robotContainer = new RobotContainer();
+
+    /* m_leftStick = new Joystick(0);
     m_rightStick = new Joystick(1);
 
     // Invert the left and right sides
     m_leftMaster.setInverted(false);
-    m_rightMaster.setInverted(true);
+    m_rightMaster.setInverted(true); */
 
-    m_leftSlave.setInverted(false);
-    m_rightSlave.setInverted(true);
+    /*m_leftSlave.setInverted(false);
+    m_rightSlave.setInverted(true);*/
 
     // Make the slave motors follow the master
     //m_leftSlave.follow(m_leftMaster);
@@ -54,6 +59,7 @@ public class Robot extends TimedRobot {
    * <p>This runs after the mode specific periodic functions, but before LiveWindow and
    * SmartDashboard integrated updating.
    */
+
   @Override
   public void robotPeriodic() {
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
