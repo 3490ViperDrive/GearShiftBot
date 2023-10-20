@@ -8,8 +8,10 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoRoutine;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.Scuff;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.ClawSubsystem.ClawIntakeOption;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,16 +27,17 @@ public class RobotContainer {
   private final ClawSubsystem m_ClawSubsystem = new ClawSubsystem();
 
   private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
-      private DriveSubsystem driveSubsystem = new DriveSubsystem();
-
+  private DriveSubsystem m_driveSubsystem = new DriveSubsystem();
 
   public RobotContainer() {
     configureBindings();
     //debug only, remove these later
+    m_driveSubsystem.setDefaultCommand(m_driveSubsystem.driveCommand(() -> m_driverController.getRawAxis(1), () -> m_driverController.getRawAxis(4)));
     //m_armSubsystem.setDefaultCommand(m_armSubsystem.controllerMoveArmCommand(() -> m_driverController.getLeftY())); //axis 1
     //m_armSubsystem.setDefaultCommand(m_armSubsystem.controllerAutoMoveArmCommand());
+    //m_driveSubsystem.setDefaultCommand(new Scuff(m_driveSubsystem, () -> m_driverController.getLeftY(), () -> m_driverController.getRightX()));
   }
 
   /**
@@ -47,7 +50,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    m_driverController.b().whileTrue(m_ClawSubsystem.intakeCommand(ClawIntakeOption.kCube));
   }
 
   /**

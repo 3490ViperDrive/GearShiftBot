@@ -53,8 +53,8 @@ public final class Constants {
 
   public static final class ClawConstants {
     public static final int kClawMotorCurrentLimit = 20;
-    public static final int kClawSolenoidForwardChannelID = 0;
-    public static final int kClawSolenoidReverseChannelID = 1;
+    public static final int kClawSolenoidForwardChannelID = 14;
+    public static final int kClawSolenoidReverseChannelID = 15;
     public static final int kClawLeftMotorControllerID = 6;
     public static final int kClawRightMotorControllerID = 7;
 
@@ -76,6 +76,10 @@ public final class Constants {
     ManipulatorSetpoint(double angle, double intakeSpeed) {
         this.angle = angle;
         this.intakeSpeed = intakeSpeed;
+    }
+
+    public boolean isAtPosition(double angle) {
+      return angle < this.angle + 2 && angle > this.angle - 2;
     }
   }
 }

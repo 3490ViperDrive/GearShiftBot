@@ -49,6 +49,8 @@ public class ClawSubsystem extends SubsystemBase {
 
         leftSparkMaxCurrentFilter = new MedianFilter(3); //increase the size of these filters if any intake false flags happen during intake
         rightSparkMaxCurrentFilter = new MedianFilter(3);
+
+        clawPneumatic.set(Value.kOff);
     }
 
     @Override
@@ -79,11 +81,12 @@ public class ClawSubsystem extends SubsystemBase {
         return new FunctionalCommand(
             () -> {
                 if (intakeState != ClawIntakeOption.kNone) return; //claw already has a game piece, why acquire another one?
+                /*
                 if (gamePiece == ClawIntakeOption.kCube) {
                     clawPneumatic.set(Value.kForward);
                 } else if (gamePiece == ClawIntakeOption.kCone) {
                     clawPneumatic.set(Value.kReverse);
-                }
+                }*/
                 leftSparkMax.set(ManipulatorSetpoint.kIntake.intakeSpeed);
             },
             () -> {},
@@ -99,5 +102,17 @@ public class ClawSubsystem extends SubsystemBase {
                 }
             }
         );
+    }
+
+    public Command shootCommand(ClawIntakeOption gamePiece, ManipulatorSetpoint position) {
+        return new FunctionalCommand(
+            () -> {
+                if (intakeState == ClawIntakeOption.kNone || position == ManipulatorSetpoint.kIntake) return;
+                leftSparkMax.set(position.intakeSpeed);
+            },
+            () -> {},
+            (interrupted) -> {leftSparkMax.set(0);},
+            () -> {return false;}
+        ).withTimeout(1); //adjust this timeout if needed
     }
 }

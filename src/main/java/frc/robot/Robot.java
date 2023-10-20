@@ -20,10 +20,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * project.
  */
 public class Robot extends TimedRobot {
-   private PWMSparkMax m_rightMaster, m_leftMaster, m_leftSlave, m_rightSlave;
-  private Joystick m_leftStick, m_rightStick;
-  private double m_startTime, m_time;
-  private double m_autoTime = 5;
   private RobotContainer m_robotContainer;
 
   /**
@@ -52,6 +48,7 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
+    CommandScheduler.getInstance().run();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -64,20 +61,12 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_startTime = Timer.getFPGATimestamp();
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    m_time = Timer.getFPGATimestamp() - m_startTime;
-    // if time is less than how long you want to drive in auto, set voltage at 50%
-    // if time is greater than how long you want to drive, set voltage to 0%
-    if (m_time < m_autoTime) {
-      //robot drives forward at 50 percengt
-    } else {
-      //stop the robot
-    }
+
   }
 
   @Override

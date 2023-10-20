@@ -88,7 +88,8 @@ public class ArmSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
         //assume pid is always enabled
-        setMotorOutput(calculateArmMotorOutput(MathUtil.clamp(feedbackController.calculate(getAngleRads()), -12, 12)));
+        //TODO re-enable arm code once tuned
+        //setMotorOutput(calculateArmMotorOutput(MathUtil.clamp(feedbackController.calculate(getAngleRads()), -12, 12)));
         updateDashboardData();
     }
 
@@ -114,6 +115,7 @@ public class ArmSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("Arm angle", getAngleDegrees());
         SmartDashboard.putNumber("Setpoint", feedbackController.getSetpoint());
         SmartDashboard.putBoolean("At Setpoint?", feedbackController.atSetpoint());
+        SmartDashboard.putNumber("Real", ((armAbsEncoder.getAbsolutePosition() * 360) % 360) - kArmEncoderOffset);
     }
 
     //this should probably be in RobotContainer.java
@@ -143,7 +145,7 @@ public class ArmSubsystem extends SubsystemBase{
      */
     public Command waitUntilAtSetpointCommand() {
         return new SequentialCommandGroup(new WaitCommand(0.05), //debounce to prevent false positives
-                                            new WaitUntilCommand(feedbackController::atSetpoint));
+                                            new WaitUntilCommand(feedbackController::atSetpoint).withTimeout(3)); //lessen this timeout as needed
     }
 
     /*
