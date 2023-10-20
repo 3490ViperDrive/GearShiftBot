@@ -29,7 +29,7 @@ public final class Constants {
   public static final class ArmConstants {
     public static final int kArmMotorControllerID = 5;
     public static final int kArmEncoderChannel = 0; //DIO port
-    public static final double kArmEncoderOffset = 0; //TODO find this when encoder is mounted
+    public static final double kArmEncoderOffset = 30; //TODO find this when encoder is mounted
 
     public static final class Feedforward { //Data from ReCalc; SysID the real consts as soon as the robot is accessible
       public static final double kG = 0.034;
@@ -39,7 +39,7 @@ public final class Constants {
     }
 
     public static final class Feedback {
-      public static final double kP = 41;
+      public static final double kP = 0.1;
       public static final double kD = 0;
     }
 
@@ -58,11 +58,12 @@ public final class Constants {
     public static final int kClawLeftMotorControllerID = 6;
     public static final int kClawRightMotorControllerID = 7;
 
-    public static final double kClawStallCurrentThreshold = 10; //TODO find on robot
+    public static final double kClawStallCurrentThreshold = 5; //TODO find on robot
+    public static final double kClawStallCurrentReadDebounce = 1; //second(s)
   }
 
   public enum ManipulatorSetpoint {
-    kIntake(-5, -0.7),    //these are all guesses, update to true values later
+    kIntake(-5, -0.45),    //these are all guesses, update to true values later
     kHybridForward(0, 0.5), //also the stow position
     kL2Forward(40, 0.7),
     kL3Forward(50, 1),

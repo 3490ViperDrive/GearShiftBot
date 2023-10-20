@@ -31,6 +31,9 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.lib.util.PreferencesHelper;
 
 import static frc.robot.Constants.ArmConstants.*;
+
+import java.util.function.DoubleSupplier;
+
 import frc.robot.Constants.ManipulatorSetpoint;
 
 public class ArmSubsystem extends SubsystemBase{
@@ -76,7 +79,7 @@ public class ArmSubsystem extends SubsystemBase{
         //initialize real components
         armSparkMax = new CANSparkMax(kArmMotorControllerID, MotorType.kBrushless);
         armAbsEncoder = new DutyCycleEncoder(kArmEncoderChannel);
-        armSparkMax.setIdleMode(IdleMode.kBrake); //is this optimal?
+        armSparkMax.setIdleMode(IdleMode.kBrake);
         armSparkMax.setInverted(false); // TODO find this on robot
 
         feedforwardController = new ArmFeedforward(Feedforward.kS, Feedforward.kG, Feedforward.kV, Feedforward.kA);
@@ -89,7 +92,16 @@ public class ArmSubsystem extends SubsystemBase{
     public void periodic() {
         //assume pid is always enabled
         //TODO re-enable arm code once tuned
+        if (debugModeEnabled()) {
+            //update pid constants (use for tuning)
+            feedbackController.setP(PreferencesHelper.grabDouble("Arm kP", Feedback.kP));
+            feedbackController.setD(PreferencesHelper.grabDouble("Arm kD", Feedback.kD));
+            feedbackController.setSetpoint(PreferencesHelper.grabDouble("Arm setpoint (Debug Mode only)", 0));
+        }
         //setMotorOutput(calculateArmMotorOutput(MathUtil.clamp(feedbackController.calculate(getAngleRads()), -12, 12)));
+        if (debugModeEnabled()) {
+            setMotorOutput(calculateArmMotorOutput(MathUtil.clamp(feedbackController.calculate(getAngleRads()), -12, 12)));
+        }
         updateDashboardData();
     }
 
@@ -102,7 +114,7 @@ public class ArmSubsystem extends SubsystemBase{
             feedbackController.setD(PreferencesHelper.grabDouble("Arm kD", Feedback.kD));
             feedbackController.setSetpoint(Units.degreesToRadians(PreferencesHelper.grabDouble("Arm setpoint (Debug Mode only)", 0)));
         }
-        //setMotorOutput(calculateArmMotorOutput(MathUtil.clamp(feedbackController.calculate(getAngleRads()), -12, 12)));
+        setMotorOutput(calculateArmMotorOutput(MathUtil.clamp(feedbackController.calculate(getAngleRads()), -12, 12)));
 
         armSimulator.update(0.02); //50hz
         armGUITube.setAngle(getAngleDegrees());
@@ -115,7 +127,8 @@ public class ArmSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("Arm angle", getAngleDegrees());
         SmartDashboard.putNumber("Setpoint", feedbackController.getSetpoint());
         SmartDashboard.putBoolean("At Setpoint?", feedbackController.atSetpoint());
-        SmartDashboard.putNumber("Real", ((armAbsEncoder.getAbsolutePosition() * 360) % 360) - kArmEncoderOffset);
+        SmartDashboard.putNumber("Real", (360 - ((armAbsEncoder.getAbsolutePosition() * 360) % 360)) - kArmEncoderOffset);
+        SmartDashboard.putBoolean("Encoder Disconnected", armAbsEncoder.isConnected());
     }
 
     //this should probably be in RobotContainer.java
@@ -159,25 +172,44 @@ public class ArmSubsystem extends SubsystemBase{
     */
 
     public double calculateArmMotorOutput(double output) {
-        double currentArmPos = getAngleRads();
+        //double currentArmPos = getAngleRads();
         //guestimating velocity like this is awful, fix soon
-        double totalOutput = MathUtil.clamp(output + feedforwardController.calculate(currentArmPos, currentArmPos - lastArmPos/*, (currentArmPos - lastArmPos) - lastArmVel*/), -12, 12);
-        lastArmVel = currentArmPos - lastArmPos;
-        lastArmPos = currentArmPos;
-        return totalOutput;
+        //double totalOutput = MathUtil.clamp(output + feedforwardController.calculate(currentArmPos, currentArmPos - lastArmPos/*, (currentArmPos - lastArmPos) - lastArmVel*/), -12, 12);
+        //lastArmVel = currentArmPos - lastArmPos;
+        //lastArmPos = currentArmPos;
+        double currentArmPos = getAngleDegrees();
+        if ((currentArmPos <= -8 && output > 0) || (currentArmPos >= 120 && output < 0)) {
+            return 0;
+        } else {
+            return MathUtil.clamp(output, -12, 12);
+        }
+        
     }
 
     public double getAngleDegrees() {
-        return Units.radiansToDegrees(getAngleRads());
+        if (RobotBase.isReal()) {
+            return (360 - ((armAbsEncoder.getAbsolutePosition() * 360) % 360)) - kArmEncoderOffset; //Tested to produce good results
+        } else {
+            return Units.radiansToDegrees(getAngleRads());
+        }
+    }
+
+    public Command moveArmManuallyCommand(DoubleSupplier up, DoubleSupplier down) {
+        return new RepeatCommand(new InstantCommand(() -> {
+            double totalOutput = (up.getAsDouble() - down.getAsDouble()) * 0.5;
+            armSparkMax.setVoltage(calculateArmMotorOutput(totalOutput * 12));
+        }, this));
     }
 
     public double getAngleRads() {
+        /*
         if (RobotBase.isReal()) {
-            return ((armAbsEncoder.getAbsolutePosition() * 360) % 360) - kArmEncoderOffset; //TODO check if this works on the robot
+            return (360 - ((armAbsEncoder.getAbsolutePosition() * 360) % 360)) - kArmEncoderOffset; //Tested to produce good results
         } else {
             return armSimulator.getAngleRads();
         }
-        
+        */
+        return armSimulator.getAngleRads();
     }
 
     //[-12, 12] voltage

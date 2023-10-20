@@ -14,11 +14,14 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.lib.util.PreferencesHelper;
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -36,14 +39,13 @@ public class DriveSubsystem extends SubsystemBase {
 
     private Solenoid leftGearboxSolenoid = new Solenoid(PneumaticsModuleType.REVPH, 0);
     private Solenoid rightGearboxSolenoid = new Solenoid(PneumaticsModuleType.REVPH, 1);
+    Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
 
     // Creates a group for the left motors and right motors, basically adds the ability to steer instead of doing some complex mathmatics or something
     //private MotorControllerGroup leftGroup;
     //private MotorControllerGroup rightGroup;
 
     //private DifferentialDrive drivetrain;
-
-    private GenericHID xboc;
 
     public DriveSubsystem() {
         leftMotor = new CANSparkMax(kFrontLeftMotorController, MotorType.kBrushless);
@@ -59,19 +61,22 @@ public class DriveSubsystem extends SubsystemBase {
         leftMotor2.follow(leftMotor);
         rightMotor2.follow(rightMotor);
 
-        xboc = new GenericHID(0);
+        leftMotor.setInverted(false); //idk if this is right
+        leftMotor2.setInverted(false);
+
+        rightMotor.setInverted(true);
+        rightMotor2.setInverted(true);
 
         //leftGroup = new MotorControllerGroup(leftMotor, leftMotor2);
         //rightGroup = new MotorControllerGroup(rightMotor, rightMotor2);
         //rightGroup.setInverted(true);
         //drivetrain = new DifferentialDrive(leftGroup, rightGroup);
 
-        leftGearboxSolenoid.set(true);
-        rightGearboxSolenoid.set(true);
+        
     }
 
     private void configDriveMotor(CANSparkMax motor) {
-        motor.setIdleMode(IdleMode.kBrake); //is this ideal?
+        motor.setIdleMode(IdleMode.kCoast); //is this ideal?
         motor.setSmartCurrentLimit(40);
     }
     
@@ -79,16 +84,35 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic(){
+        leftGearboxSolenoid.set(PreferencesHelper.grabBoolean("left gearbox pneumatic", false));
+        rightGearboxSolenoid.set(PreferencesHelper.grabBoolean("right gearbox pneumatic", false));
+        if  (PreferencesHelper.grabBoolean("compressor on?", true)) {
+            if (!compressor.isEnabled()) {
+                compressor.enableDigital();
+            }
+        } else {
+            if (compressor.isEnabled()) {
+                compressor.disable();
+            }
+        }
     }
 
     public void drive(double xSpeed, double zRotation){
         //observed: up on left stick turns right side backwards, down on left stick turns right side forwards
-        leftMotor.set(xSpeed);
-        rightMotor.set(zRotation);
-        SmartDashboard.putNumber("left motor power", xSpeed);
+        DifferentialDrive.WheelSpeeds wheelSpeeds = DifferentialDrive.arcadeDriveIK(xSpeed, zRotation, true);
+        leftMotor.set(wheelSpeeds.left);
+        rightMotor.set(-wheelSpeeds.right);
+        SmartDashboard.putNumber("left motor power", wheelSpeeds.left);
+        SmartDashboard.putNumber("right motor power", wheelSpeeds.right);
     }
 
     public Command driveCommand(DoubleSupplier xSpeed, DoubleSupplier zRotation) {
-        return new RepeatCommand(new InstantCommand(() -> {drive(xSpeed.getAsDouble(), zRotation.getAsDouble());}, this));
+        //return new RepeatCommand(new InstantCommand(() -> {drive(xSpeed.getAsDouble(), zRotation.getAsDouble());}, this));
+        return new FunctionalCommand(
+            () -> {}, 
+            () -> {drive(xSpeed.getAsDouble(), zRotation.getAsDouble());}, 
+            (interrupted) -> {drive(0, 0);}, 
+            () -> {return false;}, 
+            this);
     }
 }

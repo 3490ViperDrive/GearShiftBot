@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Constants.ManipulatorSetpoint;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoRoutine;
 import frc.robot.commands.Autos;
@@ -15,6 +16,8 @@ import frc.robot.subsystems.ClawSubsystem.ClawIntakeOption;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -34,10 +37,11 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
     //debug only, remove these later
-    m_driveSubsystem.setDefaultCommand(m_driveSubsystem.driveCommand(() -> m_driverController.getRawAxis(1), () -> m_driverController.getRawAxis(4)));
+    m_driveSubsystem.setDefaultCommand(m_driveSubsystem.driveCommand(() -> m_driverController.getLeftY(), () -> m_driverController.getRightX()));
     //m_armSubsystem.setDefaultCommand(m_armSubsystem.controllerMoveArmCommand(() -> m_driverController.getLeftY())); //axis 1
     //m_armSubsystem.setDefaultCommand(m_armSubsystem.controllerAutoMoveArmCommand());
     //m_driveSubsystem.setDefaultCommand(new Scuff(m_driveSubsystem, () -> m_driverController.getLeftY(), () -> m_driverController.getRightX()));
+    //m_armSubsystem.setDefaultCommand(m_armSubsystem.moveArmManuallyCommand(() -> m_driverController.getLeftTriggerAxis(), () -> m_driverController.getRightTriggerAxis()));
   }
 
   /**
@@ -50,7 +54,9 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    m_driverController.b().whileTrue(m_ClawSubsystem.intakeCommand(ClawIntakeOption.kCube));
+    m_driverController.a().whileTrue(m_ClawSubsystem.intakeCommand(ClawIntakeOption.kCube));
+    m_driverController.x().whileTrue(m_ClawSubsystem.shootCommand(ClawIntakeOption.kCube, ManipulatorSetpoint.kL3Forward));
+    //m_driverController.a().whileTrue(new StartEndCommand(() -> System.out.println("Pressed A"), () -> System.out.println("Unpressed A")));
   }
 
   /**
